@@ -355,8 +355,8 @@ var tarteaucitron = {
                     html += '            </div>';
                     if (tarteaucitron.parameters.AcceptAllCat == true){
                         var catName=cat[i];
-                        html += '<ul>';
-                        html += '<li id="'+cat[i]+'Line" class="tarteaucitronLine">';
+                        html += '<ul id="tarteaucitronType_' + cat[i]+'">';
+                        html += '<li id="'+cat[i]+'TypeLine" class="tarteaucitronLine">';
                         html += '   <div class="tarteaucitronName">';                                 
                         html += '       <span class="tarteaucitronH3" role="heading" aria-level="3">'+tarteaucitron.lang.allowAll+' de '+tarteaucitron.lang[cat[i]].title+'</span>';html += '   </div>';
                         html += '   <div class="tarteaucitronAsk">';
@@ -811,7 +811,8 @@ var tarteaucitron = {
             tarteaucitron.state[key] = status;
             tarteaucitron.cookie.create(key, status);
             tarteaucitron.userInterface.color(key, status);
-            tarteaucitron.userInterface.checkCatToggle(tarteaucitron.services[key].type);
+            
+            
         },
         "respondCat": function (el, status) {
             "use strict";
@@ -825,26 +826,6 @@ var tarteaucitron = {
                 tarteaucitron.userInterface.respond(el, status)
                 
             })           
-        },
-        "checkCatToggle": function (cat) {
-            "use strict";
-
-            var services=tarteaucitron.userInterface.getJobsByCat(cat)
-            
-            if(services.every(service=>{
-                return tarteaucitron.state[service]==true
-            })){
-                document.getElementById(cat + 'Line').classList.add('tarteaucitronIsAllowed');
-                document.getElementById(cat + 'Line').classList.remove('tarteaucitronIsDenied');
-            }else if(services.every(service=>{
-                return tarteaucitron.state[service]==false
-            })){
-                document.getElementById(cat + 'Line').classList.remove('tarteaucitronIsAllowed');
-                document.getElementById(cat + 'Line').classList.add('tarteaucitronIsDenied');
-            }else{
-                document.getElementById(cat + 'Line').classList.remove('tarteaucitronIsAllowed');
-                document.getElementById(cat + 'Line').classList.remove('tarteaucitronIsDenied');
-            }   
         },
         "getJobsByCat":function(cat){
             catJob=tarteaucitron.job.filter(job=> {
@@ -867,6 +848,28 @@ var tarteaucitron = {
             } else if (status === false) {
                 document.getElementById(key + 'Line').classList.remove('tarteaucitronIsAllowed');
                 document.getElementById(key + 'Line').classList.add('tarteaucitronIsDenied');
+            }
+
+            if (tarteaucitron.parameters.AcceptAllCat == true){
+                
+               var cat=tarteaucitron.services[key].type;
+
+                var services=tarteaucitron.userInterface.getJobsByCat(cat)
+            
+                if(services.every(service=>{
+                    return tarteaucitron.state[service]==true
+                })){
+                    document.getElementById(cat + 'TypeLine').classList.add(c+'IsAllowed');
+                    document.getElementById(cat + 'TypeLine').classList.remove(c+'IsDenied');
+                }else if(services.every(service=>{
+                    return tarteaucitron.state[service]==false
+                })){
+                    document.getElementById(cat + 'TypeLine').classList.remove(c+'IsAllowed');
+                    document.getElementById(cat + 'TypeLine').classList.add(c+'IsDenied');
+                }else{
+                    document.getElementById(cat + 'TypeLine').classList.remove(c+'IsAllowed');
+                    document.getElementById(cat + 'TypeLine').classList.remove(c+'IsDenied');
+                }   
             }
 
             // check if all services are allowed
